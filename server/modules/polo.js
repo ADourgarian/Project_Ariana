@@ -1,8 +1,10 @@
+var arraySort = require('array-sort');
 var Data = [];
 var coins = require('../../models/coins');
+var candles = require('../../models/candles');
 var C = require('../../constants');
 var request = require('request');
-var set = false;
+var set = true;
 var timer = 2000;
 
 function getData() {
@@ -34,17 +36,21 @@ function getData() {
     //     }
     //   });
     // }, timer);
-    request('https://poloniex.com/public?command=returnChartData&currencyPair=BTC_XMR&start=1405699200&end=9999999999&period=14400', function (error, response, body) {
-       if (!error && response.statusCode == 200) {
-         var data = JSON.parse(body);
-         console.log(data);
 
-       }
-    })
+    C.coins.forEach(function(currencyPair){
+      request('https://poloniex.com/public?command=returnChartData&currencyPair='+currencyPair+'&start=1405699200&end=9999999999&period=14400', function (error, response, body) {
+         if (!error && response.statusCode == 200) {
+           console.log('success: ',currencyPair);
+           var data = JSON.parse(body);
+           candles.create({name: currencyPair, data:data});
+         }
+      });
+      //candles.create({name: currencyPair, data:["as","df"]});
+    });
   }
 }
 
-function runTest(){
+function runTest(test){
   console.log("test 0");
 
   // coins.find({}).then(function(coins){
@@ -72,6 +78,50 @@ function runTest(){
   //   results.difBA = masterCol.sort(function(a,b){return a.difBA - b.difBA});
   //   console.log(results.difAA[1075]);
   // })
+
+  if (test == 'candles'){
+    candles.find({},function(err,candles){
+      if (!err) {
+        candles.forEach(function(e, i, a){
+          var history = {
+            name: e.name,
+            bestPerformers:[],
+            worstPerformers:[]
+          };
+          var performers = [];
+          e.data.forEach(function(e1,i1,a1){
+            if (a1.length - i1 > 2){
+              var performer = {
+                differenceHigh: a1[i1+1].high - e1.high,
+                differenceLow: a1[i1+1].low - e1.low,
+                volume: e1.volume,
+                quoteVolume: e1.quoteVolume,
+                weightedAverage: e1.weightedAverage,
+                weightedAverageDif:a1[i1+1].weightedAverage - e1.weightedAverage,
+                i:i1,
+                date:e1.date
+              };
+              performers.push(performer);
+            }
+          });
+          history.bestPerformers = arraySort(performers,  'weightedAverageDif')
+          history.worstPerformers = arraySort(performers,  'weightedAverageDif', {reverse: true})
+
+          console.log(e.name);
+          for (var x = 0; x < 10; x++){
+            console.log(e.name);
+            console.log('best performer ', x,': ', history.bestPerformers[x].i);
+            console.log('worst performer ', x,': ', history.worstPerformers[x].i);
+          }
+          // for (var x = 0; x < 10; x++){
+          //   console.log(e.name);
+          //   console.log('worst performer ', x,': ', history.worstPerformers[x]);
+          // }
+
+        })
+      }
+    })
+  }
 }
 
 //db.students.update(
@@ -94,6 +144,3 @@ function buildMasters(past, current, future, i){
     difBA: future.bids[0][0] - current.bids[0][0]
   };
 };
-
-function sortdesc(a, b){return b-a};
-function sortasc(a, b){return b-a};

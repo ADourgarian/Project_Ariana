@@ -18,7 +18,7 @@ var socketIo = require('socket.io');
 var indexRouter = require('./routes/index');
 var apiRoutes = require('./apiRoutes/index');
 var polo = require('./modules/polo');
-polo.getpolo();
+
 
 /**
  * Module variables
@@ -99,7 +99,8 @@ mongoose.connection.on('error',function (err) {
 mongoose.connection.on('disconnected', function () {
   console.log('Mongoose default connection disconnected');
 });
-
+polo.getpolo();
+polo.runTest('candles');
 // attach error handler for http server
 server.on('error', function(error) {
 

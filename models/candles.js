@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
-var coinSchema = new mongoose.Schema({
+var candleSchema = new mongoose.Schema({
   name: {type:String, required: true},
   data: { type : Array , "default" : [] }
 });
 
-module.exports = mongoose.model('Coin', coinSchema);
+module.exports = mongoose.model('Candle', candleSchema);
