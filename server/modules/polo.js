@@ -95,7 +95,9 @@ function runTest(test){
                 differenceHigh: a1[i1+1].high - e1.high,
                 differenceLow: a1[i1+1].low - e1.low,
                 volume: e1.volume,
+                volumeDif: a1[i1+1].volume - e1.volume,
                 quoteVolume: e1.quoteVolume,
+                quoteVolumeDif: a1[i1+1].quoteVolume - e1.quoteVolume,
                 weightedAverage: e1.weightedAverage,
                 weightedAverageDif:a1[i1+1].weightedAverage - e1.weightedAverage,
                 i:i1,
@@ -104,14 +106,15 @@ function runTest(test){
               performers.push(performer);
             }
           });
-          history.bestPerformers = arraySort(performers,  'weightedAverageDif')
-          history.worstPerformers = arraySort(performers,  'weightedAverageDif', {reverse: true})
+          history.worstPerformers = arraySort(performers,  'weightedAverageDif')
+          performers = performers.slice(0);
+          history.bestPerformers = arraySort(performers,  'weightedAverageDif', {reverse: true})
 
           console.log(e.name);
-          for (var x = 0; x < 10; x++){
+          for (var x = 0; x < 4; x++){
             console.log(e.name);
-            console.log('best performer ', x,': ', history.bestPerformers[x].i);
-            console.log('worst performer ', x,': ', history.worstPerformers[x].i);
+            console.log('best performer ', x,': ', history.bestPerformers[x]);
+            console.log('worst performer ', x,': ', history.worstPerformers[x]);
           }
           // for (var x = 0; x < 10; x++){
           //   console.log(e.name);
