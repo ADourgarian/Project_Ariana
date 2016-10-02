@@ -92,12 +92,12 @@ function runTest(test){
           e.data.forEach(function(e1,i1,a1){
             if (a1.length - i1 > 2){
               var performer = {
-                differenceHigh: a1[i1+1].high - e1.high,
-                differenceLow: a1[i1+1].low - e1.low,
+                differenceHighL: a1[i111].high - e1.high,
+                differenceLowL: a1[i111].low - e1.low,
                 volume: e1.volume,
-                volumeDif: a1[i1+1].volume - e1.volume,
+                volumeDifL: a1[i111].volume - e1.volume,
                 quoteVolume: e1.quoteVolume,
-                quoteVolumeDif: a1[i1+1].quoteVolume - e1.quoteVolume,
+                quoteVolumeDifL: a1[i1-1].quoteVolume - e1.quoteVolume,
                 weightedAverage: e1.weightedAverage,
                 weightedAverageDif:a1[i1+1].weightedAverage - e1.weightedAverage,
                 i:i1,
